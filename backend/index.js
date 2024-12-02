@@ -4,6 +4,9 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 
 
+const authRouter = require('./routes/auth/auth-route')
+
+
 //create database connection
 mongoose.connect('mongodb+srv://chanakanipun10:2836394@cluster0.amecy.mongodb.net/'
 ).then(()=>console.log('MongoDB Connected'))
@@ -30,6 +33,8 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+
+app.use('api/auth', authRouter)
 
 
 app.listen(PORT, ()=> console.log(`Server is runnig on port ${PORT}`))
