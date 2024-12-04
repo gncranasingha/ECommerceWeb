@@ -24,6 +24,7 @@ function AuthRegister() {
       if (data?.payload?.success) {
         toast({
           title: data?.payload?.message,
+          variant : "outline"
         });
         navigate("/auth/login");
       } else {

@@ -40,13 +40,42 @@ const registerUser = async(req,res) => {
 }
 
 //login
-const Login = async(req, res) =>{
+const LoginUser = async(req, res) =>{
 
     const {email,password} = req.body;
 
     try{
 
+        const checkUser = await User.findOne({email})
+        if(!checkUser) {
+            return res.json({
+                success : false,
+                message : "User doesn't exists.! Please Register First"
+            })
+        }
 
+        const checkPasswordMatch = await bcrypt.compare(password, checkUser.password)
+        if(!checkPasswordMatch) {
+            return res.json({
+                success : false,
+                message : "Incorrect Password.! Please Try agin"
+            })
+        }
+
+        const token = jwt.sign({
+
+            id : checkUser._id, role : checkUser.role, email : checkUser.email
+        }, 'CLIENT_SELECT_KEY', {expiresIn : '60m'} )
+
+        res.cookie('token', token, {httpOnly: true, secure: false}).json ({
+            success : true,
+            message : "Logged in successfully",
+            user : {
+                email : checkUser.email,
+                role : checkUser.role,
+                id : checkUser._id
+            }
+        })
 
     }catch(e){
         console.log(e);
@@ -63,4 +92,4 @@ const Login = async(req, res) =>{
 
 
 
-module.exports = {registerUser}
+module.exports = {registerUser, LoginUser}
