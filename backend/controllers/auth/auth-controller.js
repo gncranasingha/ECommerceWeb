@@ -10,6 +10,11 @@ const registerUser = async(req,res) => {
 
     try{
 
+        const checkUser = await User.findOne({email})
+        if(checkUser){
+            return res.json({success : false, message : 'User Already exists with the same email .! Please try again'})
+        }
+
         const hashPassword = await bcrypt.hash(password,12);
         const newUser = new User({
             userName,
@@ -19,7 +24,7 @@ const registerUser = async(req,res) => {
 
         await newUser.save()
         res.status(200).json({
-            success : false,
+            success : true,
             message : "Registration Successfully"
         })
 
@@ -36,7 +41,12 @@ const registerUser = async(req,res) => {
 
 //login
 const Login = async(req, res) =>{
+
+    const {email,password} = req.body;
+
     try{
+
+
 
     }catch(e){
         console.log(e);
