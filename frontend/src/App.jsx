@@ -20,6 +20,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import { checkAuth } from "./store/auth-slice"
 
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 function App() {
 
@@ -30,11 +32,12 @@ function App() {
   const dispatch = useDispatch()
 
   useEffect(()=> {
-    dispatch(checkAuth)
+    dispatch(checkAuth())
 
   },[dispatch])
 
-  if(isLoading) return <div>Loading.....</div>
+  if(isLoading) return <Skeleton className="w-[800] bg-black h-[600px] rounded-full" />
+
 
 
 
@@ -42,7 +45,7 @@ function App() {
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         <Route path="/auth" element={
-          <CheckAuth isAuthenticated={isAuthenticated}user={user}>
+          <CheckAuth isAuthenticated={isAuthenticated} user={user}>
             <AuthLayout/>
           </CheckAuth>
         } >
@@ -50,7 +53,7 @@ function App() {
           <Route path="register" element={<Authregister/>} />
         </Route>
         <Route path="/admin" element={
-          <CheckAuth isAuthenticated={isAuthenticated}user={user} >
+          <CheckAuth isAuthenticated={isAuthenticated} user={user} >
             <Adminlayout/>
           </CheckAuth>
         } >
@@ -60,7 +63,7 @@ function App() {
           <Route path="features" element={<Adminfeatures/>} />
         </Route>
         <Route path="/shop"  element={
-          <CheckAuth isAuthenticated={isAuthenticated}user={user} >
+          <CheckAuth isAuthenticated={isAuthenticated} user={user} >
             <Shoppinglayout/>
           </CheckAuth>
         }>
