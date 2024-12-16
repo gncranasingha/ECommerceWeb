@@ -5,7 +5,7 @@ const cors = require('cors')
 
 
 const authRouter = require('./routes/auth/auth-route')
-
+const adminProductsRouter = require('./routes/admin/products-routes')
 
 //create database connection
 mongoose.connect('mongodb+srv://chanakanipun10:2836394@cluster0.amecy.mongodb.net/'
@@ -35,6 +35,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api/auth', authRouter)
+app.use('/api/admin/products', adminProductsRouter)
 
 
 app.listen(PORT, ()=> console.log(`Server is runnig on port ${PORT}`))
