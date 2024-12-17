@@ -35,7 +35,7 @@ export const loginUser = createAsyncThunk('/auth/login',
 export const logoutUser = createAsyncThunk('/auth/logout',
 
     async() => {
-        const response = await axios.post('http://localhost:5000/api/auth/logout',{},{
+        const response = await axios.post('http://localhost:5000/api/auth/logout',{},{ //empty data object must to pass
             withCredentials : true
         })
 
