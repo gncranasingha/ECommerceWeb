@@ -7,7 +7,9 @@ import ProductDetailsDialog from '@/components/shopping-view/product-details'
 import ShoppingProductTile from '@/components/shopping-view/product-tile'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useToast } from '@/components/ui/use-toast'
 import { sortOptions } from '@/config'
+import { addToCart, fetchCartItems } from '@/store/shop/cart-slice'
 import { fetchAllFilterdProducts, fetchProductDetails } from '@/store/shop/products-slice'
 
 import { ArrowUpDownIcon } from 'lucide-react'
@@ -34,10 +36,13 @@ const ShoppingListing = () => {
 
   const dispatch = useDispatch()
   const {productList, productDetails} = useSelector((state)=> state.shopProducts) //use name of reducer in store.js
+  const {user} = useSelector(state => state.auth)
+ const {cartItems} = useSelector(state => state.shopCart)
   const [filters, setFilters]= useState({})
   const [sort, setSort] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+  const {toast} = useToast()
 
   //sort controll function
   function handleSort(value){
@@ -107,6 +112,30 @@ useEffect(()=> {
     setOpenDetailsDialog(true)
   }
 },[productDetails])
+
+
+//handle cart item
+function handleAddtoCart(getCurrentProductId){
+  console.log(getCurrentProductId, "currentid");
+  dispatch(addToCart({userId : user?.id, productId : getCurrentProductId, quantity : 1})).then(data => {
+    if(data?.payload?.success){
+      dispatch(fetchCartItems(user?.id))
+      toast({
+        title: "Product added to cart",
+        description: "Product has been added to cart successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      })
+    }
+    
+  }
+  )
+}
+
+console.log(cartItems, "cart items");
+
+
   
 
 
@@ -142,7 +171,12 @@ useEffect(()=> {
                   {
                     productList && productList.length > 0 ?
                     productList.map((productItem)=>
-                      <ShoppingProductTile handleGetProductDetails={handleGetProductDetails} product={productItem} />
+                      <ShoppingProductTile 
+                          handleGetProductDetails={handleGetProductDetails} 
+                          product={productItem} 
+                          handleAddtoCart={ handleAddtoCart}
+                          />
+                          
                     ) : null
                   }
           </div>

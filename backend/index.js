@@ -7,10 +7,11 @@ const cors = require('cors')
 const authRouter = require('./routes/auth/auth-route')
 const adminProductsRouter = require('./routes/admin/products-routes')
 const shopProductsRouter = require('./routes/shop/products-routes')
+const shopCartRouter = require('./routes/shop/cart-routes')
 
 
 //create database connection
-mongoose.connect('mongodb+srv://chanakanipun10:2836394@cluster0.amecy.mongodb.net/'
+mongoose.connect('mongodb+srv://chanakanipun10:2836394@cluster0.amecy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 ).then(()=>console.log('MongoDB Connected'))
 .catch(error=>console.log(error))
 
@@ -39,6 +40,7 @@ app.use(express.json());
 app.use('/api/auth', authRouter)
 app.use('/api/admin/products', adminProductsRouter)
 app.use('/api/shop/products', shopProductsRouter)
+app.use('/api/shop/cart', shopCartRouter)
 
 
 app.listen(PORT, ()=> console.log(`Server is runnig on port ${PORT}`))
