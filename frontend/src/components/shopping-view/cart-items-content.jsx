@@ -21,21 +21,19 @@ const UserCartitemsContent = ({cartItem}) => {
         toast({
           title: "Cart item is updated successfully",
         })
-      }})
+      }})}
 
-  function handleCartItemDelete(getCartItem) {
-    dispatch(
-      deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        toast({
-          title: "Cart item is deleted successfully",
+      function handleCartItemDelete(getCartItem) {
+        dispatch(
+          deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
+        ).then((data) => {
+          if (data?.payload?.success) {
+            toast({
+              title: "Cart item is deleted successfully",
+            });
+          }
         });
       }
-    });
-  }
-
-  }
   return (
     <div className='flex items-center space-x-4' >
       <img src={cartItem?.image} alt={cartItem?.title} className='w-20 h-20 rounded object-cover' />
@@ -46,6 +44,7 @@ const UserCartitemsContent = ({cartItem}) => {
           variant="outline" 
           size="icon" 
           className="h-8 w-8 rounded-full"
+          disabled={cartItem?.quantity === 1}
           onClick={()=> handleUpdateQuantity(cartItem, 'minus')}
           >
           <Minus className='w-4 h-4' />
