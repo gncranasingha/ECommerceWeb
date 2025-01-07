@@ -1,6 +1,6 @@
 const Address = require('../../models/Address')
 
-const addAddress = async () => {
+const addAddress = async (req, res) => {
  
     try {
 
@@ -40,7 +40,7 @@ const addAddress = async () => {
   
 }
 
-const fetchAllAddress =  async () => {
+const fetchAllAddress =  async (req, res) => {
  
     try {
 
@@ -69,7 +69,7 @@ const fetchAllAddress =  async () => {
   
 }
 
-const editAddress = async() => {
+const editAddress = async(req, res) => {
  
     try {
 
@@ -113,7 +113,7 @@ const editAddress = async() => {
   
 }
 
-const deleteAddress = async () => {
+const deleteAddress = async (req, res) => {
  
     try {
 
