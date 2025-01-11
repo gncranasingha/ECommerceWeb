@@ -5,7 +5,7 @@ import Authregister from "./pages/auth/register"
 import Adminlayout from "./components/admin-view/layout"
 import Admindashboard from "./pages/admin-view/dashboard"
 import Adminproducts from "./pages/admin-view/products"
-import Adminorders from "./pages/admin-view/orders"
+
 import Adminfeatures from "./pages/admin-view/features"
 import Shoppinglayout from "./components/shopping-view/layout"
 import NotFound from "./pages/not-found"
@@ -21,6 +21,7 @@ import { useEffect } from "react"
 import { checkAuth } from "./store/auth-slice"
 
 import { Skeleton } from "@/components/ui/skeleton"
+import AdminordersView from "./components/admin-view/orders"
 
 
 function App() {
@@ -59,7 +60,7 @@ function App() {
         } >
           <Route path="dashboard" element={<Admindashboard/>} />
           <Route path="products" element={<Adminproducts/>} />
-          <Route path="orders" element={<Adminorders/>} />
+          <Route path="orders" element={<AdminordersView/>} />
           <Route path="features" element={<Adminfeatures/>} />
         </Route>
         <Route path="/shop"  element={
