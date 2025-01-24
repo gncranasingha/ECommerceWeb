@@ -7,13 +7,11 @@ const initialState = {
   productDetails: null,
 };
 
-export const fetchAllFilterdProducts = createAsyncThunk(
-  "/products/fetchAllFIlterdProducts",
+export const fetchAllFilteredProducts = createAsyncThunk(
+  "/products/fetchAllProducts",
   async ({ filterParams, sortParams }) => {
-    //pass the filter from backend and set url
-
+   
     const query = new URLSearchParams({
-      //filter part
       ...filterParams,
       sortBy: sortParams,
     });
@@ -21,6 +19,9 @@ export const fetchAllFilterdProducts = createAsyncThunk(
     const result = await axios.get(
       `http://localhost:5000/api/shop/products/get?${query}`
     );
+
+    console.log(result, "fetch all filter data");
+
     return result?.data;
   }
 );
@@ -28,11 +29,10 @@ export const fetchAllFilterdProducts = createAsyncThunk(
 export const fetchProductDetails = createAsyncThunk(
   "/products/fetchProductDetails",
   async (id) => {
-    //pass the filter from backend and set url
-
     const result = await axios.get(
       `http://localhost:5000/api/shop/products/get/${id}`
     );
+
     return result?.data;
   }
 );
@@ -47,37 +47,28 @@ const shoppingProductSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllFilterdProducts.pending, (state, action) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchAllFilterdProducts.fulfilled, (state, action) => {
-        console.log(action.payload);
-
-        state.isLoading = false;
-        state.productList = action.payload.data;
-      })
-      .addCase(fetchAllFilterdProducts.rejected, (state, action) => {
-        console.log(action.payload);
-
-        state.isLoading = false;
-        state.productList = [];
-      })
-
-      .addCase(fetchProductDetails.pending, (state, action) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchProductDetails.fulfilled, (state, action) => {
-        console.log(action.payload);
-
-        state.isLoading = false;
-        state.productDetails = action.payload.data;
-      })
-      .addCase(fetchProductDetails.rejected, (state, action) => {
-        console.log(action.payload);
-
-        state.isLoading = false;
-        state.productDetails = null;
-      });
+    .addCase(fetchAllFilteredProducts.pending, (state, action) => {
+      state.isLoading = true;
+    })
+    .addCase(fetchAllFilteredProducts.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.productList = action.payload.data;
+    })
+    .addCase(fetchAllFilteredProducts.rejected, (state, action) => {
+      state.isLoading = false;
+      state.productList = [];
+    })
+    .addCase(fetchProductDetails.pending, (state, action) => {
+      state.isLoading = true;
+    })
+    .addCase(fetchProductDetails.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.productDetails = action.payload.data;
+    })
+    .addCase(fetchProductDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.productDetails = null;
+    });
   },
 });
 

@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenu
 import { useToast } from '@/components/ui/use-toast'
 import { sortOptions } from '@/config'
 import { addToCart, fetchCartItems } from '@/store/shop/cart-slice'
-import { fetchAllFilterdProducts, fetchProductDetails } from '@/store/shop/products-slice'
+import { fetchAllFilteredProducts, fetchProductDetails } from '@/store/shop/products-slice'
 
 import { ArrowUpDownIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
@@ -75,10 +75,11 @@ const ShoppingListing = () => {
   }
 
   useEffect(() => {
-      setSort("price-lowtohigh")
-      setFilters(JSON.parse(sessionStorage.getItem('filters')) || {} )
-  },[])
-
+    setSort("price-lowtohigh");
+    const savedFilters = JSON.parse(sessionStorage.getItem("filters")) || {};
+    setFilters(savedFilters);
+  }, []);
+  
 
   useEffect(() => { //change the URL according to filters
     if(filters && Object.keys(filters).length > 0 ){
@@ -90,10 +91,14 @@ const ShoppingListing = () => {
 
 
     //fetch list of products
-  useEffect(()=>{
-    if(filters !== null && sort !== null)
-    dispatch(fetchAllFilterdProducts({filterParams: filters , sortParams: sort} )) //fetch data from redux store
-  },[dispatch, sort, filters])
+    useEffect(() => {
+      const params = {
+        filterParams: filters && Object.keys(filters).length > 0 ? filters : {},
+        sortParams: sort,
+      };
+      dispatch(fetchAllFilteredProducts(params));
+    }, [dispatch, sort, filters]);
+    
 
   //console.log(filters, searchParams.toString());
 console.log(productDetails, "productdetails");
