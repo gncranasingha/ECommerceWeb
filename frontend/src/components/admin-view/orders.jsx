@@ -1,13 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Button } from '../ui/button'
 import { Dialog } from '../ui/dialog'
 import AdminOrderDetailsView from './order-details'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllOrdersForAdmin, getOrderDetailsForAdmin } from '@/store/admin/order-slice'
+import { resetOrderDetails } from '@/store/shop/order-slice'
+
+import { Badge } from '../ui/badge'
 
 const AdminordersView = () => {
 
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+  const { orderList, orderDetails } = useSelector((state) => state.adminOrder)
+  const dispatch = useDispatch()
+
+  function handleFetchOrderDetails(getId) {
+    dispatch(getOrderDetailsForAdmin(getId))
+  }
+
+  useEffect(() => {
+    dispatch(getAllOrdersForAdmin())
+  }, [dispatch])
+
+  console.log(orderDetails, "orderDetails");
+
+  useEffect(() => {
+    if (orderDetails !== null) {
+      setOpenDetailsDialog(true)
+      
+    }
+  }, [orderDetails])
+  
 
   return (
     <Card>
@@ -28,21 +53,47 @@ const AdminordersView = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
-                        <TableCell>123456</TableCell>
-                        <TableCell>27/06/2024</TableCell>
-                        <TableCell>In Process</TableCell>
-                        <TableCell>$1000</TableCell>
-                        <TableCell>
-                          
-                            <Dialog open={openDetailsDialog} onOpenChange={setOpenDetailsDialog} >
-                              <Button onClick={()=>setOpenDetailsDialog(true)} >View Details</Button>
-                              <AdminOrderDetailsView/>
-                            </Dialog>
-                            
-                                               
-                        </TableCell>
-                      </TableRow>
+                    {
+              orderList && orderList.length > 0 ?
+              orderList.map(orderItem => 
+                <TableRow>
+                  <TableCell>{orderItem?._id}</TableCell>
+                  <TableCell>{orderItem?.orderDate.split('T')[0]}</TableCell>
+                  <TableCell>
+                    <Badge className={`py-1 px-3 
+                    ${
+                      orderItem?.orderStatus === "confirmed"
+                      ? "bg-green-500"
+                      : orderItem?.orderStatus === "pending"
+                      ? "bg-yellow-500"
+                      : orderItem?.orderStatus === "rejected"
+                      ? "bg-red-600"
+                      : "bg-black"
+                    }`} 
+                    >
+                      {orderItem?.orderStatus}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{orderItem?.totalAmount}</TableCell>
+                  <TableCell>
+
+                    <Dialog 
+                      open={openDetailsDialog} 
+                      onOpenChange={()=>{setOpenDetailsDialog(false)
+                      dispatch(resetOrderDetails())
+                      }}
+                       >
+                      <Button 
+                      onClick={()=>handleFetchOrderDetails(orderItem?._id)}
+                      >View Details
+                      </Button>
+                      <AdminOrderDetailsView orderDetails={orderDetails} />
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+               )
+              : null
+            }
                     </TableBody>
                   </Table>
                 </CardContent>

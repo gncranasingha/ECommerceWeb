@@ -14,10 +14,32 @@ const ProductDetailsDialog = ({open,setOpen, productDetails}) => {
 
     const dispatch = useDispatch()
     const {user} = useSelector(state => state.auth)
+     const {cartItems} = useSelector(state => state.shopCart)
+    
     const {toast} = useToast()
 
-    function handleAddtoCart(getCurrentProductId){
-      console.log(getCurrentProductId, "currentid");
+    function handleAddtoCart(getCurrentProductId, getTotalStock){
+      //console.log(getCurrentProductId, "currentid");
+
+      let getCartItems = cartItems.items || [];
+
+      if (getCartItems.length) {
+        const indexOfCurrentItem = getCartItems.findIndex(
+          (item) => item.productId === getCurrentProductId
+        );
+        if (indexOfCurrentItem > -1) {
+          const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+          if (getQuantity + 1 > getTotalStock) {
+            toast({
+              title: `Only ${getQuantity} quantity can be added for this item`,
+              variant: "destructive",
+            });
+    
+            return;
+          }
+        }
+      }
+
       dispatch(addToCart({userId : user?.id, productId : getCurrentProductId, quantity : 1})).then(data => {
         if(data?.payload?.success){
           dispatch(fetchCartItems(user?.id))
@@ -73,7 +95,22 @@ const ProductDetailsDialog = ({open,setOpen, productDetails}) => {
                     <span className='text-muted-foreground' >{4.5}</span>
                 </div>
                 <div className='mt-5 mb-5' >
-                    <Button className='w-full' onClick={()=>handleAddtoCart(productDetails?._id)} >Add to Cart</Button>
+                    {
+                        productDetails?.totalStock === 0 ?
+                        <Button 
+                        className='w-full opacity-60 cursor-not-allowed' 
+                        
+                        >
+                        Out Of Stock
+                        </Button> :
+                        <Button 
+                        className='w-full' 
+                        onClick={()=>handleAddtoCart(productDetails?._id, productDetails?.totalStock)}
+                        >
+                        Add to Cart
+                        </Button>
+                    }
+                    
                 </div>
                 <Separator/>
                 <div className='max-h-[300px] overflow-auto' >
