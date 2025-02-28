@@ -21,7 +21,7 @@ const UserCartitemsContent = ({cartItem}) => {
 
       if (getCartItems.length) {
         const indexOfCurrentCartItem = getCartItems.findIndex(
-          (item) => item.productId === getCartItem?.productId
+          (item) => item.productId === getCartItem?.productId 
         );
 
         const getCurrentProductIndex = productList.findIndex((product) => product._id === getCartItem.productId);
